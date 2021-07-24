@@ -3,10 +3,13 @@ import styles from '../styles/Home.module.css'
 
 import { useAppDispatch, useAppSelector } from '../app/hooks'
 import { incremented, amountAdded } from '../features/counter/counterSlice'
+import { useFetchTodosQuery } from '../features/todos/todosApiSlice'
 
 export default function Home() {
   const counter = useAppSelector(state => state.counter.value)
   const dispatch = useAppDispatch()
+
+  const { data: todos = [], isFetching } = useFetchTodosQuery()
 
   return (
     <div className={styles.container}>
@@ -18,6 +21,17 @@ export default function Home() {
       <button onClick={() => dispatch(incremented())}>Add counter</button>
       <button onClick={() => dispatch(amountAdded(10))}>Add 10</button>
       <p>{counter}</p>
+      {isFetching ? (
+        <h1>Loading</h1>
+      ) : (
+        <div>
+          {todos.map(todo => (
+            <ul key={todo.id}>
+              <li>{todo.title}</li>
+            </ul>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
